@@ -70,6 +70,10 @@ COPY . /catkin_ws/src/f1tenth_gym_ros
 RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; cd catkin_ws; catkin_make; source devel/setup.bash"
 
 
-CMD ["/catkin_ws/src/f1tenth_gym_ros/start.sh"]
+RUN bin/bash "/catkin_ws/src/f1tenth_gym_ros/start.sh"
+# CMD ["/catkin_ws/src/f1tenth_gym_ros/start.sh"]
 
 # CMD ["roslaunch", "package file.launch"]
+
+WORKDIR /home/ferzm/
+CMD [ "bin/bash" ]
