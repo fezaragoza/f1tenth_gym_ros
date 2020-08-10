@@ -2,20 +2,22 @@ FROM ros:melodic-robot-bionic
 
 ENV IM_IN_DOCKER Yes
 
-RUN apt-get update --fix-missing && \
-    apt-get install -y \
+RUN apt update --fix-missing && \
+    apt upgrade -y && \
+    apt install -y \
     python-pip
 
-RUN apt-get install -y libzmq3-dev \
-                       git \
-                       build-essential \
-                       autoconf \
-                       libtool \
-                       libeigen3-dev \
-                       cmake \
-                       vim \
-                       ros-melodic-ackermann-msgs \
-                       ros-melodic-map-server
+RUN apt install -y libzmq3-dev \
+                    git \
+                    build-essential \
+                    autoconf \
+                    libtool \
+                    libeigen3-dev \
+                    cmake \
+                    vim \
+                    ros-melodic-ackermann-msgs \
+                    ros-melodic-map-server \
+                    gdb
 
 
 RUN cp -r /usr/include/eigen3/Eigen /usr/include
@@ -70,10 +72,11 @@ COPY . /catkin_ws/src/f1tenth_gym_ros
 RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; cd catkin_ws; catkin_make; source devel/setup.bash"
 
 
-RUN bin/bash "/catkin_ws/src/f1tenth_gym_ros/start.sh"
 # CMD ["/catkin_ws/src/f1tenth_gym_ros/start.sh"]
+# RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
+RUN echo "source /catkin_ws/src/f1tenth_gym_ros/start.sh" >> ~/.bashrc
 
 # CMD ["roslaunch", "package file.launch"]
 
-WORKDIR /home/ferzm/
-CMD [ "bin/bash" ]
+WORKDIR /root/ferzm/
+CMD [ "/bin/bash" ]
