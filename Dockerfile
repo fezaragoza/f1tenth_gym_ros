@@ -19,6 +19,13 @@ RUN apt install -y libzmq3-dev \
                     ros-melodic-map-server \
                     gdb
 
+# RUN sudo rosdep init && \
+#     rosdep update
+# sudo rosdep fix-permissions
+
+# RUN apt-get install -y  pyhton-rosinstall \
+#                         python-rosinstall-generator \
+#                         pyhton-wstool
 
 RUN cp -r /usr/include/eigen3/Eigen /usr/include
 
@@ -50,35 +57,38 @@ RUN pip install numpy==1.16.0 \
 
 
 # RUN git clone https://github.com/f1tenth/f1tenth_gym
-RUN mkdir /f1tenth_gym
-COPY ./f1tenth_gym /f1tenth_gym
+# RUN echo $HOME
+# Using ~ does not work
+ENV HOME /root
+RUN mkdir $HOME/f1tenth_gym
+COPY ./f1tenth_gym $HOME/f1tenth_gym
 
-RUN cd f1tenth_gym && \
+RUN cd $HOME/f1tenth_gym && \
     mkdir build && \
     cd build && \
     cmake .. && \
     make
 
-RUN cd f1tenth_gym && \
+RUN cd $HOME/f1tenth_gym && \
     cp ./build/sim_requests_pb2.py ./gym/ && \
     pip install -e gym/
 
-RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; mkdir -p catkin_ws/src; cd catkin_ws; catkin_make"
+RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; mkdir -p ~/catkin_ws/src/; cd ~/catkin_ws; catkin_make"
 
-RUN mkdir /catkin_ws/src/f1tenth_gym_ros
+RUN mkdir $HOME/catkin_ws/src/f1tenth_gym_ros
 
-COPY . /catkin_ws/src/f1tenth_gym_ros
+COPY . $HOME/catkin_ws/src/f1tenth_gym_ros
 
-RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; cd catkin_ws; catkin_make; source devel/setup.bash"
+RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; cd ~/catkin_ws; catkin_make; source devel/setup.bash"
 
-RUN cd /catkin_ws/src && \
+RUN cd $HOME/catkin_ws/src && \
     git clone --recurse-submodules https://github.com/ros-drivers/rosserial.git
 
-RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; cd catkin_ws; catkin_make; catkin_make install"
+RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; cd ~/catkin_ws; catkin_make; catkin_make install"
 
 # CMD ["/catkin_ws/src/f1tenth_gym_ros/start.sh"]
 # RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
-RUN echo "source /catkin_ws/src/f1tenth_gym_ros/start.sh" >> ~/.bashrc
+RUN echo "source ~/catkin_ws/src/f1tenth_gym_ros/start.sh" >> ~/.bashrc
 
 # CMD ["roslaunch", "package file.launch"]
 
