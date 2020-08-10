@@ -71,6 +71,10 @@ COPY . /catkin_ws/src/f1tenth_gym_ros
 
 RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; cd catkin_ws; catkin_make; source devel/setup.bash"
 
+RUN cd /catkin_ws/src && \
+    git clone --recurse-submodules https://github.com/ros-drivers/rosserial.git
+
+RUN /bin/bash -c "source /opt/ros/melodic/setup.bash; cd catkin_ws; catkin_make; catkin_make install"
 
 # CMD ["/catkin_ws/src/f1tenth_gym_ros/start.sh"]
 # RUN echo "source /catkin_ws/devel/setup.bash" >> ~/.bashrc
