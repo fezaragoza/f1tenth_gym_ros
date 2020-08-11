@@ -92,5 +92,12 @@ RUN echo "source ~/catkin_ws/src/f1tenth_gym_ros/start.sh" >> ~/.bashrc
 
 # CMD ["roslaunch", "package file.launch"]
 
+RUN echo 'export DISPLAY=192.168.1.87:0.0' >> ~/.bashrc
+
+RUN apt update --fix-missing && \
+    apt upgrade -y && \
+    apt install -y \
+    ros-melodic-rviz
+
 WORKDIR /root/ferzm/
 CMD [ "/bin/bash" ]
